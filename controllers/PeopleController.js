@@ -1,4 +1,4 @@
-const People = require('../models/People');
+import { People } from '../models/People.js'
 
 // Controller to get all people
 export const getAllPeople = async (req, res) => {
