@@ -35,11 +35,14 @@ This project demonstrates **how to properly protect Express APIs** using rate li
 git clone https://github.com/your-username/express-rate-limiting.git
 cd express-rate-limiting
 
-2️⃣ Install dependencies
+### 2️⃣ Install dependencies
+```bash
 npm install
 
-3️⃣ Configure environment variables
+### 3️⃣ Configure environment variables
+```bash
 cp .env.example .env
 
-4️⃣ Start the server
+### 4️⃣ Start the server
+```bash
 npm run dev
