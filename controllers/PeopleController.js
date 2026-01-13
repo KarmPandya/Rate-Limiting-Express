@@ -1,7 +1,7 @@
 const People = require('../models/People');
 
 // Controller to get all people
-const getAllPeople = async (req, res) => {
+export const getAllPeople = async (req, res) => {
     try {
         const people = await People.find();
         res.status(200).json(people);
@@ -11,7 +11,7 @@ const getAllPeople = async (req, res) => {
 };
 
 // Controller to get a person by ID
-const getPersonById = async (req, res) => {
+export const getPersonById = async (req, res) => {
     try {
         const person = await People.findById(req.params.id);
         if (!person) {
@@ -24,7 +24,7 @@ const getPersonById = async (req, res) => {
 };
 
 // Controller to create a new person
-const createPerson = async (req, res) => {
+export const createPerson = async (req, res) => {
     try {
         const newPerson = new People(req.body);
         await newPerson.save();
@@ -35,7 +35,7 @@ const createPerson = async (req, res) => {
 };
 
 // Controller to update a person by ID
-const updatePersonById = async (req, res) => {
+export const updatePersonById = async (req, res) => {
     try {
         const updatedPerson = await People.findByIdAndUpdate(req.params.id, req.body, { new: true });
         if (!updatedPerson) {
@@ -48,7 +48,7 @@ const updatePersonById = async (req, res) => {
 };
 
 // Controller to delete a person by ID
-const deletePersonById = async (req, res) => {
+export const deletePersonById = async (req, res) => {
     try {
         const deletedPerson = await People.findByIdAndDelete(req.params.id);
         if (!deletedPerson) {
@@ -60,11 +60,3 @@ const deletePersonById = async (req, res) => {
     }
 };
 
-// Exporting the controllers
-module.exports = {
-    getAllPeople,
-    getPersonById,
-    createPerson,
-    updatePersonById,
-    deletePersonById
-};
