@@ -3,8 +3,8 @@ import cors from "cors";
 import dotenv from "dotenv";
 import { connectDB } from "./config/db.js";
 
-const app = express();
 dotenv.config();
+const app = express();
 
 await connectDB();
 
