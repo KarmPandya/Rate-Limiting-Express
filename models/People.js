@@ -30,4 +30,4 @@ export const PeopleSchema = new mongoose.Schema({
   }
 );
 
-const People = mongoose.model("People", PeopleSchema);
+export const People = mongoose.model("People", PeopleSchema);
