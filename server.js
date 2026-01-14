@@ -4,6 +4,7 @@ import dotenv from "dotenv";
 import peopleRoutes from './routes/PeopleRoutes.js';
 import { connectDB } from "./config/db.js";
 import { rateLimit } from 'express-rate-limit';
+import helmet from 'helmet';
 
 dotenv.config();
 const app = express();
@@ -21,6 +22,9 @@ const limiter = rateLimit({
   message: "Too many requests, try again later."
 });
 app.use(limiter);
+
+// Helmet for security
+app.use(helmet());
 
 // Routes
 app.get("/", (req, res) => {
