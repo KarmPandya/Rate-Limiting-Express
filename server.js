@@ -2,6 +2,7 @@ import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
 import helmet from "helmet";
+import { errorHandler } from "./middlewares/errorMiddleware.js";
 import { rateLimit } from "express-rate-limit";
 
 import peopleRoutes from "./routes/PeopleRoutes.js";
@@ -15,6 +16,8 @@ const PORT = process.env.PORT || 5000;
 // --------------------
 // Global Middleware
 // --------------------
+
+app.use(errorHandler);
 app.use(helmet());
 
 app.use(
@@ -30,14 +33,14 @@ app.use(express.json());
 // Rate Limiters
 // --------------------
 
-// 🔐 Auth limiter (strict)
+// Auth limiter (strict)
 const authLimiter = rateLimit({
   windowMs: 5 * 60 * 1000, // 5 minutes
   max: 10, // 10 requests per IP
-  message: "Too many auth attempts, try again later.",
+  message: "Too many attempts, try again later.",
 });
 
-// 🌍 API limiter (moderate)
+// API limiter (moderate)
 const apiLimiter = rateLimit({
   windowMs: 10 * 60 * 1000, // 10 minutes
   max: 200, // 200 requests per IP
