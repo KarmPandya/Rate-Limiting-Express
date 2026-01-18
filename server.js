@@ -1,33 +1,52 @@
 import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
-import peopleRoutes from './routes/PeopleRoutes.js';
-import authRoutes from './routes/authRoutes.js'
+import helmet from "helmet";
+import { rateLimit } from "express-rate-limit";
+
+import peopleRoutes from "./routes/PeopleRoutes.js";
+import authRoutes from "./routes/authRoutes.js";
 import { connectDB } from "./config/db.js";
-import { rateLimit } from 'express-rate-limit';
-import helmet from 'helmet';
 
 dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-// Middleware
-app.use(cors({ origin: process.env.CLIENT_URL || "*" }));
-app.use(express.json());
-
-// Rate Limiter
-// const limiter = rateLimit({
-//   windowMs: 5 * 60 * 1000, // 5 minutes
-//   max: 5, // Maximum 5 requests
-//   // if we hit the API for more than 5 times the error will be : 429 Too Many Requests
-//   message: "Too many requests, try again later."
-// });
-// app.use(limiter);
-
-// Helmet for security
+// --------------------
+// Global Middleware
+// --------------------
 app.use(helmet());
 
+app.use(
+  cors({
+    origin: process.env.CLIENT_URL || "http://localhost:3000",
+    allowedHeaders: ["Content-Type", "Authorization"],
+  })
+);
+
+app.use(express.json());
+
+// --------------------
+// Rate Limiters
+// --------------------
+
+// 🔐 Auth limiter (strict)
+const authLimiter = rateLimit({
+  windowMs: 5 * 60 * 1000, // 5 minutes
+  max: 10, // 10 requests per IP
+  message: "Too many auth attempts, try again later.",
+});
+
+// 🌍 API limiter (moderate)
+const apiLimiter = rateLimit({
+  windowMs: 10 * 60 * 1000, // 10 minutes
+  max: 200, // 200 requests per IP
+  message: "Too many requests, slow down.",
+});
+
+// --------------------
 // Routes
+// --------------------
 app.get("/", (req, res) => {
   res.status(200).json({
     success: true,
@@ -35,10 +54,15 @@ app.get("/", (req, res) => {
   });
 });
 
-app.use("/api/people", peopleRoutes);
-app.use("/api/auth/", authRoutes);
+// Auth routes → strict limit
+app.use("/api/auth", authLimiter, authRoutes);
 
+// Non-auth API routes → moderate limit
+app.use("/api/people", apiLimiter, peopleRoutes);
+
+// --------------------
 // Start Server
+// --------------------
 const startServer = async () => {
   try {
     await connectDB();
@@ -52,4 +76,3 @@ const startServer = async () => {
 };
 
 startServer();
-
