@@ -1,11 +1,11 @@
 import jwt from 'jsonwebtoken'
 import bcrypt from 'bcrypt'
-import People from '../models/People.js'
+import { People } from '../models/People.js'
 
-export const registerUser = async (res, req) => {
+export const registerUser = async (req, res) => {
     try {
         const { name, email, password } = req.body;
-        let person = People.findOne({ email });
+        let person = await People.findOne({ email });
         if (person) {
             return res.status(400).json({
                 message: "User already exists"
@@ -19,7 +19,7 @@ export const registerUser = async (res, req) => {
             message: "Person addded successfully"
         })
     } catch (error) {
-        console.log("Error: ", error.message)
+        res.send("Error", error.message)
     }
 }
 
@@ -29,6 +29,7 @@ export const loginUser = async (req, res) => {
         const { email, password } = req.body;
 
         let person = await People.findOne({ email });
+
         if (!person) {
             return res.status(400).json({
                 message: "User doesn't exist"
@@ -38,7 +39,7 @@ export const loginUser = async (req, res) => {
         const isMatch = await bcrypt.compare(password, person.password);
 
         if (!isMatch) {
-            res.status(400).json({
+            return res.status(400).json({
                 message: "Invalid Creadentials"
             });
         }
@@ -46,7 +47,7 @@ export const loginUser = async (req, res) => {
         // JWT Token Creation
 
         const token = jwt.sign(
-            { id: user._id },
+            { id: person._id },
             process.env.JWT_SECRET,
             { expiresIn: "1d" }
         );
@@ -57,8 +58,9 @@ export const loginUser = async (req, res) => {
             person
         });
 
-    }catch(error){
+    } catch (error) {
         res.send("Error", error.message);
+        console.log(`Error: ${error.message}`)
     }
 
 }

@@ -23,16 +23,6 @@ export const getPersonById = async (req, res) => {
     }
 };
 
-// Controller to create a new person
-export const createPerson = async (req, res) => {
-    try {
-        const newPerson = new People(req.body);
-        await newPerson.save();
-        res.status(201).json(newPerson);
-    } catch (error) {
-        res.status(400).json({ message: 'Error creating person', error });
-    }
-};
 
 // Controller to update a person by ID
 export const updatePersonById = async (req, res) => {

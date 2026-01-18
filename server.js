@@ -2,6 +2,7 @@ import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
 import peopleRoutes from './routes/PeopleRoutes.js';
+import authRoutes from './routes/authRoutes.js'
 import { connectDB } from "./config/db.js";
 import { rateLimit } from 'express-rate-limit';
 import helmet from 'helmet';
@@ -15,13 +16,13 @@ app.use(cors({ origin: process.env.CLIENT_URL || "*" }));
 app.use(express.json());
 
 // Rate Limiter
-const limiter = rateLimit({
-  windowMs: 5 * 60 * 1000, // 5 minutes
-  max: 5, // Maximum 5 requests
-  // if we hit the API for more than 5 times the error will be : 429 Too Many Requests
-  message: "Too many requests, try again later."
-});
-app.use(limiter);
+// const limiter = rateLimit({
+//   windowMs: 5 * 60 * 1000, // 5 minutes
+//   max: 5, // Maximum 5 requests
+//   // if we hit the API for more than 5 times the error will be : 429 Too Many Requests
+//   message: "Too many requests, try again later."
+// });
+// app.use(limiter);
 
 // Helmet for security
 app.use(helmet());
@@ -35,6 +36,7 @@ app.get("/", (req, res) => {
 });
 
 app.use("/api/people", peopleRoutes);
+app.use("/api/auth/", authRoutes);
 
 // Start Server
 const startServer = async () => {

@@ -1,9 +1,11 @@
 import express from 'express'
-import { getAllPeople, createPerson } from '../controllers/PeopleController.js'
+import { getAllPeople, getPersonById, updatePersonById, deletePersonById } from '../controllers/PeopleController.js'
 
 const router = express.Router()
 
 router.get('/', getAllPeople)
-router.post('/', createPerson)
+router.get('/:id', getPersonById)
+router.put('/:id', updatePersonById)
+router.delete('/:id', deletePersonById)
 
 export default router;
