@@ -1,1 +1,1 @@
-import jsonWebToken from "jsonwebtoken";
+import jsonwebtoken from "jsonwebtoken";
